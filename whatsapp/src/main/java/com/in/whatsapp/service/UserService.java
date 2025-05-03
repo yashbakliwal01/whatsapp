@@ -44,4 +44,8 @@ public class UserService {
 		return connectedUsers.contains(userId);
 	}
     
+    public boolean existsById(Long userId) {
+    	return userRepository.existsById(userId);
+    }
+    
 }

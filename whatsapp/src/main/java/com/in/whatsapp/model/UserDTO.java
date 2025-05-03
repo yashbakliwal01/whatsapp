@@ -1,7 +1,5 @@
 package com.in.whatsapp.model;
 
-import org.springframework.validation.annotation.Validated;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;

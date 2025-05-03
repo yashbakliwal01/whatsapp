@@ -2,7 +2,9 @@ package com.in.whatsapp.controller;
 
 import java.util.Optional;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,27 +27,42 @@ public class UserController {
 	
 	@PostMapping
 //	public User registerUser(@RequestParam String name, @RequestParam String phone) {
-	public User registerUser(@RequestBody @Validated UserDTO userDTO) {
-		return userService.registerUser(userDTO.getName(), userDTO.getPhone());
+	public ResponseEntity<?> registerUser(@RequestBody @Validated UserDTO userDTO) {
+		if(userDTO.getName()==null || userDTO.getPhone()==null) {
+			return ResponseEntity.badRequest().body("Name and Phone number must not be null.");
+		}
+		
+		User registeredUser = userService.registerUser(userDTO.getName(), userDTO.getPhone());
+		return ResponseEntity.ok(registeredUser);
 	}
 	
 	@GetMapping("/{userId}")
-	public User getUser(@PathVariable Long userId){
+	public ResponseEntity<?> getUser(@PathVariable Long userId){
 		Optional<User> userOptional = userService.getUser(userId);
 		if(userOptional.isPresent()) {
-			return userOptional.get();
+			return ResponseEntity.ok(userOptional.get());
 		}
-		throw new RuntimeException("User Not Found!!!");
+		return ResponseEntity.status(404).body("User with userId: "+userId+ " NOT FOUND.");
 	}
 	
 	
 	@PostMapping("/login")
-	public void login(@RequestParam Long userId) {
+	public ResponseEntity<String> login(@RequestParam Long userId) {
+		if(!userService.existsById(userId)) {
+			return ResponseEntity.status(404).body("User with userId: "+userId+ " NOT FOUND.");
+		}
+		
 		userService.login(userId);
+		return 	ResponseEntity.ok("User logged in successfully.");
 	}
 	
 	@PostMapping("/logout")
-	public void logout(@RequestParam Long userId) {
+	public ResponseEntity<String> logout(@RequestParam Long userId) {
+		if(!userService.existsById(userId)) {
+			return ResponseEntity.status(404).body("User with userId: "+userId+ " NOT FOUND.");
+		}
+		
 		userService.logout(userId);
+		return 	ResponseEntity.ok("User logged in successfully.");
 	}
 }

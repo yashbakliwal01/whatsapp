@@ -3,8 +3,11 @@ package com.in.whatsapp.model;
 import java.time.LocalDateTime;
 
 import com.in.whatsapp.enums.ContentType;
+import com.in.whatsapp.enums.MessageStatus;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,6 +27,13 @@ public class Message {
 	private String content;
 	private ContentType contentType;
 	private LocalDateTime createdOn;
+	
+	private LocalDateTime sentTime;
+	private LocalDateTime deliveredTime;
+	private LocalDateTime seenTime;
+	
+	@Enumerated(EnumType.STRING)
+	private MessageStatus status;
 	
 
 }
